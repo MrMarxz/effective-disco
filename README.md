@@ -7,4 +7,5 @@ Members of the team:
 - Markus Marais - 34906258
 
 Project name:
+
 Share2Teach is an open education resource web application.
