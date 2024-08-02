@@ -2,6 +2,6 @@
 
 Members of the team:
 
-- Jacob Swait - 35164050
+- Jacob Swati - 35164050
 - Katlego Lefenya - 21403325
 - Markus Marais - 34906258
