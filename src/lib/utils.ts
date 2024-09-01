@@ -3,6 +3,8 @@ import { twMerge } from "tailwind-merge"
 import { createHash, randomBytes } from "crypto";
 import { type CustomResponse, type PasswordHashResponse } from "./types";
 import { NextResponse } from "next/server";
+import prisma from "~/lib/prisma";
+import { RoleEnum } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -97,3 +99,32 @@ export const validatePassword = (password: string) => {
 
   return res;
 };
+
+export const validateUser = async (userId: string) => {
+  if (!userId) {
+    return false;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      role: {
+        select: {
+          name: true,
+        },
+      },
+    }
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  if (user.role.name === RoleEnum.USER) {
+    return true;
+  } else {
+    return false;
+  }
+}
