@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import {
   getServerSession,
@@ -5,10 +7,12 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
-
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "~/lib/prisma";
 import { env } from "~/env";
 import { db } from "~/server/db";
+import { validatePasswordWithSalt } from "~/lib/utils";
+import { RoleEnum } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,15 +24,9 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      roleName: RoleEnum
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**
@@ -38,30 +36,91 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
+    jwt: ({ token, user }) => {
+      // console.log('JWT CALLBACK', token, user);
+      if (user) {
+        token.user = user;
+      }
+      return token;
+    },
+    session: ({ session, token }) => {
+      // console.log('SESSION CALLBACK', session, token);
+      session.user = token.user as {
+        id: string;
+        roleName: RoleEnum;
+      };
+      return session;
+    },
+  },
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      type: "credentials",
+      credentials: {
+        email: {},
+        password: {},
+      },
+      async authorize(credentials) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        if (!email || !password) {
+          return null;
+        }
+
+        // const hashed_response: PasswordHashResponse = hashPassword(password);
+
+        const user = await prisma.user.findFirst({
+          where: {
+            email: email,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            password: true,
+            salt: true,
+            role: {
+              select: {
+                name: true
+              }
+            },
+          }
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        // Hash the input password with the salt from the database
+        const isValid = validatePasswordWithSalt(
+          password,
+          user.salt,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          user.password,
+        );
+
+        if (isValid) {
+          const filteredUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            roleName: user.role.name
+          }
+          return filteredUser;
+        } else {
+          return null;
+        }
       },
     }),
-  },
-  adapter: PrismaAdapter(db) as Adapter,
-  providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
+  session: {
+    maxAge: 1 * 24 * 60 * 60,
+  },
+  // If the user goes to a protected page but is not signed in, redirect to this page
+  pages: {
+    signIn: "/login",
+  },
 };
 
 /**
