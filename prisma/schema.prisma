@@ -13,27 +13,85 @@ datasource db {
 
 enum RoleEnum {
     ADMIN
+    MODERATOR
+    EDUCATOR
     USER
 }
 
 model User {
-    id        String   @id @default(cuid())
-    name      String
-    surname   String
-    email     String   @unique
-    password  String
-    roleId    String
-    salt      String
-    active    Boolean  @default(true)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    role      Role     @relation(fields: [roleId], references: [id])
+    id          String        @id @default(cuid())
+    name        String
+    surname     String
+    email       String        @unique
+    password    String
+    roleId      String
+    salt        String
+    active      Boolean       @default(true)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    affiliation String?
+    credentials String?
+    role        Role          @relation(fields: [roleId], references: [id])
+    fileUploads FileUploads[]
+    actions     Actions[]
 
     @@index([roleId])
 }
 
 model Role {
-    id         String   @id @default(cuid())
-    name       RoleEnum
-    users      User[]
+    id          String   @id @default(cuid())
+    name        RoleEnum
+    description String
+    users       User[]
+}
+
+enum FileUploadStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+model FileUploads {
+    id       String           @id @default(cuid())
+    status   FileUploadStatus
+    url      String
+    size     Int
+    type     String
+    name     String
+    comments String
+    reported Boolean          @default(false)
+    display  Boolean          @default(true)
+    userId   String
+    user     User             @relation(fields: [userId], references: [id])
+    metaData MetaData[]
+
+    @@index([userId])
+}
+
+model MetaData {
+    id      String      @id @default(cuid())
+    subject String
+    grade   Int
+    tags    String[]
+    rating  Int
+    fileId  String
+    file    FileUploads @relation(fields: [fileId], references: [id])
+
+    @@index([fileId])
+}
+
+model Actions {
+    id          String @id @default(cuid())
+    description String
+    createdAt   DateTime @default(now())
+    userId      String
+    user        User @relation(fields: [userId], references: [id])
+
+    @@index([userId])
+}
+
+model FAQ {
+    id         String @id @default(cuid())
+    question    String
+    answer      String
 }
