@@ -100,9 +100,24 @@ export const validatePassword = (password: string) => {
   return res;
 };
 
-export const validateUser = async (userId: string) => {
+const allowedUserCalls = [
+  "/protected",
+];
+
+const allowedAdminCalls = [
+  "/protected",
+];
+
+const allowedModeratorCalls = [];
+
+const allowedEducatorCalls = [];
+
+export const validateUser = async (userId: string, route: string) => {
   if (!userId) {
-    return false;
+    return {
+      valid: false,
+      message: "User not found",
+    };
   }
 
   const user = await prisma.user.findUnique({
@@ -119,12 +134,28 @@ export const validateUser = async (userId: string) => {
   });
 
   if (!user) {
-    return false;
+    return {
+      valid: false,
+      message: "User not found",
+    };
+  }
+
+  if (!allowedUserCalls.includes(route)) {
+    return {
+      valid: false,
+      message: "Route not allowed",
+    };
   }
 
   if (user.role.name === RoleEnum.USER) {
-    return true;
+    return {
+      valid: true,
+      message: "User has permission to execute this action",
+    };
   } else {
-    return false;
+    return {
+      valid: false,
+      message: "User does not have permission to execute this action",
+    };
   }
 }

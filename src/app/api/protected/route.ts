@@ -12,9 +12,9 @@ export async function POST(request: Request) {
 
         // Check if the user has permission to execute this action
         const userId = session.user.id;
-        const isValidUser = await validateUser(userId);
-        if (!isValidUser) {
-            return StandardResponse(false, "You do not have permission to execute this action");
+        const isValidUser = await validateUser(userId, "/protected");
+        if (!isValidUser.valid) {
+            return StandardResponse(false, isValidUser.message);
         }
 
         // If the user does have the correct role, execute the action

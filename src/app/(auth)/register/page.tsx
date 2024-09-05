@@ -69,7 +69,9 @@ export default function RegisterPage() {
       } else {
         console.log("ERROR REGISTERING");
         if (response.data.message) {
+          console.log(response.data.message);
         } else {
+          console.log(response.data)
         }
       }
     } catch (error) {
