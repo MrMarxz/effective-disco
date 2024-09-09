@@ -53,12 +53,12 @@ enum FileUploadStatus {
 
 model FileUploads {
     id       String           @id @default(cuid())
-    status   FileUploadStatus
+    status   FileUploadStatus @default(PENDING)
     url      String
     size     Int
     type     String
     name     String
-    comments String
+    comments String?
     reported Boolean          @default(false)
     display  Boolean          @default(true)
     userId   String
@@ -73,7 +73,7 @@ model MetaData {
     subject String
     grade   Int
     tags    String[]
-    rating  Int
+    rating  Int         @default(0)
     fileId  String
     file    FileUploads @relation(fields: [fileId], references: [id])
 
@@ -81,17 +81,17 @@ model MetaData {
 }
 
 model Actions {
-    id          String @id @default(cuid())
+    id          String   @id @default(cuid())
     description String
     createdAt   DateTime @default(now())
     userId      String
-    user        User @relation(fields: [userId], references: [id])
+    user        User     @relation(fields: [userId], references: [id])
 
     @@index([userId])
 }
 
 model FAQ {
-    id         String @id @default(cuid())
-    question    String
-    answer      String
+    id       String @id @default(cuid())
+    question String
+    answer   String
 }
