@@ -63,19 +63,20 @@ model FileUploads {
     display  Boolean          @default(true)
     userId   String
     user     User             @relation(fields: [userId], references: [id])
-    metaData MetaData[]
+    metaData MetaData?
 
     @@index([userId])
 }
 
 model MetaData {
-    id      String      @id @default(cuid())
+    id      String       @id @default(cuid())
     subject String
     grade   Int
     tags    String[]
-    rating  Int         @default(0)
-    fileId  String
-    file    FileUploads @relation(fields: [fileId], references: [id])
+    rating  Int          @default(0)
+    likes   Int          @default(0)
+    fileId  String       @unique
+    file    FileUploads? @relation(fields: [fileId], references: [id])
 
     @@index([fileId])
 }
