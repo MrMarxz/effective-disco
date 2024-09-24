@@ -9,6 +9,40 @@ interface RequestBody {
     email: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/request-password-reset:
+ *   post:
+ *     summary: Request password reset
+ *     description: Sends a password reset link to the user's email and returns a standard response
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *     responses:
+ *       '200':
+ *         description: Password reset request successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Password reset request submitted successfully
+ */
+
 export async function POST(request: Request) {
     try {        
         const body: RequestBody = await request.json();
@@ -51,7 +85,7 @@ export async function POST(request: Request) {
         };
         await sendEmail(emailData);
 
-        return StandardResponse(true, "Password reset request submitted successfully", { redirectLink});
+        return StandardResponse(true, "Password reset request submitted successfully", { redirectLink });
     } catch (e) {
         console.log("Error: ", e);
         return StandardResponse(false, "An error occurred");

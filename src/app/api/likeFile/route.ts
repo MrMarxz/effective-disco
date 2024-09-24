@@ -7,6 +7,41 @@ interface LikeRequest {
     fileId: string
 }
 
+/**
+ * @swagger
+ * /api/likeFile:
+ *   put:
+ *     summary: Like a file
+ *     description: Adds a like to a file and returns a standard response
+ *     tags:
+ *       - File Interactions
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fileId:
+ *                 type: string
+ *                 description: The unique identifier of the file to be liked
+ *                 example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       '200':
+ *         description: File liked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: File liked successfully
+ */
+
 export async function PUT(request: Request) {
     try {
         //#region Check permissions

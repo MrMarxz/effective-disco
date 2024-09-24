@@ -16,6 +16,73 @@ interface UpdateRequest {
     display?: boolean;
 }
 
+/**
+ * @swagger
+ * /api/editFileRecord:
+ *   post:
+ *     summary: Edit a file record
+ *     description: Updates an existing file record and returns a standard response
+ *     tags:
+ *       - File Records
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The unique identifier of the file record to update
+ *                 example: 507f1f77bcf86cd799439011
+ *               status:
+ *                 type: string
+ *                 description: The current status of the file upload
+ *                 example: PENDING
+ *               url:
+ *                 type: string
+ *                 description: The updated URL of the file
+ *                 example: https://example.com/updated-file.pdf
+ *               size:
+ *                 type: number
+ *                 description: The updated size of the file in bytes
+ *                 example: 305600
+ *               type:
+ *                 type: string
+ *                 description: The updated file type (e.g., pdf, doc, etc.)
+ *                 example: doc
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the file
+ *                 example: Updated File Name
+ *               comments:
+ *                 type: string
+ *                 description: Any comments or notes about the file
+ *                 example: Updated due to new guidelines
+ *               reported:
+ *                 type: boolean
+ *                 description: Whether the file has been reported
+ *                 example: false
+ *               display:
+ *                 type: boolean
+ *                 description: Whether the file should be displayed
+ *                 example: true
+ *     responses:
+ *       '200':
+ *         description: File record updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Record updated successfully!
+ */
+
 export async function PUT(request: Request) {
     try {
         //#region Check permissions

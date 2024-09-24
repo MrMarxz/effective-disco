@@ -7,6 +7,45 @@ interface ResetPasswordRequest {
   password: string;
 }
 
+/**
+ * @swagger
+ * /api/auth/reset-password:
+ *   post:
+ *     summary: Reset password
+ *     description: Resets the user's password and returns a standard response
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 description: The unique identifier for the password reset request (could be a user ID or reset token)
+ *                 example: 507f1f77bcf86cd799439011
+ *               password:
+ *                 type: string
+ *                 description: The new password to be set
+ *                 example: NewPassword123!
+ *     responses:
+ *       '200':
+ *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Successfully reset password!
+ */
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

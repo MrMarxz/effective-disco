@@ -8,6 +8,45 @@ interface RateRequest {
     rating: number
 }
 
+/**
+ * @swagger
+ * /api/rateFile:
+ *   put:
+ *     summary: Rate a file
+ *     description: Adds a rating to a file and returns a standard response
+ *     tags:
+ *       - File Interactions
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fileId:
+ *                 type: string
+ *                 description: The unique identifier of the file to be rated
+ *                 example: 507f1f77bcf86cd799439011
+ *               rating:
+ *                 type: number
+ *                 description: The rating value to be assigned to the file (e.g., between 1 and 5)
+ *                 example: 4
+ *     responses:
+ *       '200':
+ *         description: File rated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: File rated successfully
+ */
+
 export async function PUT(request: Request) {
     try {
         //#region Check permissions

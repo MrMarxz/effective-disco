@@ -7,11 +7,10 @@ import jwt from 'jsonwebtoken';
 
 //#region Allowed routes for each role. These should be closely monitored and updated as needed
 const openRoutes: string[] = [
-    // "/getFAQ",
+    "/getFAQ",
 ];
 
 const allowedUserCalls: string[] = [
-    "/getFAQ",
     "/createFileRecord",
     "/editFileRecord",
     "/likeFile",
