@@ -37,6 +37,7 @@ model User {
 
     @@index([roleId])
     PasswordResetRequest PasswordResetRequest[]
+    Session Session[]
 }
 
 model Role {
@@ -106,6 +107,17 @@ model PasswordResetRequest {
     used      Boolean  @default(false)
     createdAt DateTime @default(now())
     expiresAt DateTime
+
+    @@index([userId])
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    token     String
+    expiresAt DateTime
+    createdAt DateTime @default(now())
 
     @@index([userId])
 }

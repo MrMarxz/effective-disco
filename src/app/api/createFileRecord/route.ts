@@ -23,10 +23,13 @@ export async function POST(request: Request) {
         }
         //#endregion
         
-        const session = await getServerAuthSession();
-        if (!session) {
-            return StandardResponse(false, "Not authenticated");
-        }
+        // TODO will be commented back in when working on the front end
+        // const session = await getServerAuthSession();
+        // if (!session) {
+        //     return StandardResponse(false, "Not authenticated");
+        // }
+        // const userId = session.user.id;
+        const userId = permission.userId;
 
         //* The purpose of this call is to create a new record in the database for a file that has been uploaded *\\
         // Get the data from the request
@@ -36,8 +39,6 @@ export async function POST(request: Request) {
         if (!data.url || !data.size || !data.type || !data.name) {
             return StandardResponse(false, "Invalid data");
         }
-
-        const userId = session.user.id;
 
         // Create a new record in the database
         const record = await prisma.fileUploads.create({

@@ -26,6 +26,7 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: z.string(),
     EMAIL_USER: z.string(),
     MAILERSNED_API_KEY: z.string(),
+    JWT_SECRET: z.string(),
   },
 
   /**
@@ -50,6 +51,7 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     EMAIL_USER: process.env.EMAIL_USER,
     MAILERSNED_API_KEY: process.env.MAILERSNED_API_KEY,
+    JWT_SECRET: process.env.JWT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

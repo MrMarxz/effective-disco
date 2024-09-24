@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import prisma from "~/lib/prisma";
 import { RoleEnum } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
+import jwt from 'jsonwebtoken';
 
 //#region Allowed routes for each role. These should be closely monitored and updated as needed
 const openRoutes: string[] = [
-    "/getFAQ",
+    // "/getFAQ",
 ];
 
 const allowedUserCalls: string[] = [
+    "/getFAQ",
     "/createFileRecord",
     "/editFileRecord",
     "/likeFile",
@@ -43,6 +47,7 @@ const allowedEducatorCalls: string[] = [
 export interface PermissionResponse {
     valid: boolean;
     message: string;
+    userId: string;
 }
 
 // Pre-defined messages for the permission validation
@@ -53,6 +58,7 @@ const permissionMessages = {
     invalidRole: "Invalid role. Please provide a valid role",
     noPermission: (role: RoleEnum) => `You do not have permission to execute this action as a ${role}`,
     success: "Permission granted",
+    tokenMissing: "Token missing. Please provide a valid token in the headers",
 }
 
 
@@ -64,9 +70,6 @@ const permissionMessages = {
  */
 export const checkPermissions = async (request: Request): Promise<PermissionResponse> => {
     console.log("CHECKING PERMISSIONS");
-    // Get the user session
-    const session = await getServerAuthSession();
-    const userId = session?.user.id;
 
     // Extract the route from the request
     const url = new URL(request.url);
@@ -79,13 +82,72 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
         return {
             valid: true,
             message: permissionMessages.success,
+            userId: "",
         };
     }
+
+
+    //#region Session Management
+    // ! This will be commented back in when we work on the frontend
+    // const session = await getServerAuthSession();
+    // const userId = session?.user.id;
+
+    // ! This is a temporary solution for the backend
+    // Get the session from the header
+    const session = request.headers.get("Authorization");
+
+    // Remove the Bearer prefix
+    const token = session?.replace("Bearer ", "");
+
+    if (!token) {
+        return {
+            valid: false,
+            message: permissionMessages.userNotFound,
+            userId: "",
+        };
+    }
+
+    // Verify the token
+    jwt.verify(token, "secret", (err, decoded) => {
+        if (err) {
+            return {
+                valid: false,
+                message: permissionMessages.tokenMissing,
+                userId: "",
+            };
+        }
+        console.log("DECODED", decoded);
+    });
+
+    // Find the user with the associated token
+    const sessionUser = await prisma.session.findFirst({
+        where: {
+            token: token,
+        },
+        include: {
+            user: true
+        }
+    });
+
+    if (!sessionUser) {
+        return {
+            valid: false,
+            message: permissionMessages.userNotFound,
+            userId: "",
+        };
+    }
+
+    const userId = sessionUser.userId;
+    // ! End of temporary solution ! \\
+
+    //#endregion
+
 
     if (!userId) {
         return {
             valid: false,
             message: permissionMessages.userNotFound,
+            userId: "",
         };
     }
 
@@ -93,6 +155,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
         return {
             valid: false,
             message: permissionMessages.routeNotFound,
+            userId: "",
         };
     }
 
@@ -110,6 +173,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
         return {
             valid: false,
             message: permissionMessages.userNotFound,
+            userId: "",
         };
     }
 
@@ -120,6 +184,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.USER),
+                    userId: "",
                 };
             }
             break;
@@ -128,6 +193,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.ADMIN),
+                    userId: "",
                 };
             }
             break;
@@ -136,6 +202,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.MODERATOR),
+                    userId: "",
                 };
             }
             break;
@@ -144,6 +211,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.EDUCATOR),
+                    userId: "",
                 };
             }
             break;
@@ -151,6 +219,7 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
             return {
                 valid: false,
                 message: permissionMessages.invalidRole,
+                userId: "",
             };
     }
 
@@ -158,5 +227,6 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
     return {
         valid: true,
         message: permissionMessages.success,
+        userId: userId,
     };
 }
