@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useToast } from "~/components/ui/use-toast";
+import toast from "react-hot-toast";
+import { RefreshCw } from "lucide-react";
 
 export default function LoginForm() {
     const router = useRouter();
-    const { toast } = useToast();
     const [isLoginButtonLoading, setIsLoginButtonLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -27,18 +27,11 @@ export default function LoginForm() {
             console.log("RESPONSE: ", response);
 
             if (!response?.error) {
-                toast({
-                    variant: "default",
-                    title: "Successfully logged in!",
-                });
+                toast.success("Logged in successfully!");
                 // router.push("/overview");
                 // router.refresh();
             } else {
-                console.log("ERROR LOGGING IN");
-                toast({
-                    variant: "destructive",
-                    title: "Incorrect credentials! Please try again.",
-                });
+                toast.error("Incorrect credentials! Please try again.");
                 if (response.error === "CredentialsSignin")
                     console.log("Invalid credentials");
             }
@@ -86,6 +79,7 @@ export default function LoginForm() {
                         className="mt-6 w-full"
                         disabled={isLoginButtonLoading}
                     >
+                        {isLoginButtonLoading && <RefreshCw className="animate-spin mr-2 h-4 w-4" />}
                         Sign In
                     </Button>
 

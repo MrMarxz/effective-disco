@@ -36,6 +36,7 @@ model User {
     actions     Actions[]
 
     @@index([roleId])
+    PasswordResetRequest PasswordResetRequest[]
 }
 
 model Role {
@@ -95,4 +96,16 @@ model FAQ {
     id       String @id @default(cuid())
     question String
     answer   String
+}
+
+model PasswordResetRequest {
+    id        String   @id @default(cuid())
+
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    used      Boolean  @default(false)
+    createdAt DateTime @default(now())
+    expiresAt DateTime
+
+    @@index([userId])
 }
