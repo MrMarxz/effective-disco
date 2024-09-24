@@ -1,9 +1,17 @@
 import { FileUploadStatus } from "@prisma/client";
+import { checkPermissions } from "~/lib/permissions";
 import prisma from "~/lib/prisma";
 import { StandardResponse } from "~/lib/utils";
 
 export async function GET(request: Request) {
     try {
+        //#region Check permissions
+        const permission = await checkPermissions(request);
+        if (permission.valid === false) {
+            return StandardResponse(false, permission.message);
+        }
+        //#endregion
+        
         const { searchParams } = new URL(request.url);
         const query = searchParams.get("query");
 

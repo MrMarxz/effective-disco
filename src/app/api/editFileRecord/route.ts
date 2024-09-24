@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { type FileUploadStatus } from "@prisma/client";
+import { checkPermissions } from "~/lib/permissions";
 import prisma from "~/lib/prisma";
 import { StandardResponse } from "~/lib/utils";
 
@@ -17,18 +18,12 @@ interface UpdateRequest {
 
 export async function PUT(request: Request) {
     try {
-        // const session = await getServerAuthSession();
-        // if (!session) {
-        //     // throw new Error("Not authenticated");
-        //     return StandardResponse(false, "Not authenticated");
-        // }
-
-        // Check if the user has permission to execute this action
-        // const userId = session.user.id;
-        // const isValidUser = await validateUser(userId, "/protected");
-        // if (!isValidUser.valid) {
-        //     return StandardResponse(false, isValidUser.message);
-        // }
+        //#region Check permissions
+        const permission = await checkPermissions(request);
+        if (permission.valid === false) {
+            return StandardResponse(false, permission.message);
+        }
+        //#endregion
 
         
         const data: UpdateRequest = await request.json();
@@ -55,6 +50,8 @@ export async function PUT(request: Request) {
         }
 
         // Update the record in the database
+        // The elipsis operator is used to only update the fields that were provided
+        // If a field was not provided, it will not be updated
         const updatedRecord = await prisma.fileUploads.update({
             where: {
                 id: data.id

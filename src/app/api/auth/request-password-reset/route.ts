@@ -1,6 +1,7 @@
 import { env } from "~/env";
 import { sendEmail } from "~/lib/email-service";
 import { ForgetPasswordTemplate } from "~/lib/email-templates/forget-password";
+import { checkPermissions } from "~/lib/permissions";
 import prisma from "~/lib/prisma";
 import { StandardResponse } from "~/lib/utils";
 
@@ -9,7 +10,7 @@ interface RequestBody {
 }
 
 export async function POST(request: Request) {
-    try {
+    try {        
         const body: RequestBody = await request.json();
 
         if (!body.email) {

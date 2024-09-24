@@ -3,8 +3,6 @@ import { twMerge } from "tailwind-merge"
 import { createHash, randomBytes } from "crypto";
 import { type CustomResponse, type PasswordHashResponse } from "./types";
 import { NextResponse } from "next/server";
-import prisma from "~/lib/prisma";
-import { RoleEnum } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -99,63 +97,3 @@ export const validatePassword = (password: string) => {
 
   return res;
 };
-
-const allowedUserCalls = [
-  "/protected",
-];
-
-const allowedAdminCalls = [
-  "/protected",
-];
-
-const allowedModeratorCalls = [];
-
-const allowedEducatorCalls = [];
-
-export const validateUser = async (userId: string, route: string) => {
-  if (!userId) {
-    return {
-      valid: false,
-      message: "User not found",
-    };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      role: {
-        select: {
-          name: true,
-        },
-      },
-    }
-  });
-
-  if (!user) {
-    return {
-      valid: false,
-      message: "User not found",
-    };
-  }
-
-  if (!allowedUserCalls.includes(route)) {
-    return {
-      valid: false,
-      message: "Route not allowed",
-    };
-  }
-
-  if (user.role.name === RoleEnum.USER) {
-    return {
-      valid: true,
-      message: "User has permission to execute this action",
-    };
-  } else {
-    return {
-      valid: false,
-      message: "User does not have permission to execute this action",
-    };
-  }
-}
