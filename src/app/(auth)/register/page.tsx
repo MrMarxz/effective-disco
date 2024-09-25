@@ -11,6 +11,7 @@ import { validateEmail, validatePassword } from "~/lib/utils";
 import Image from "next/image";
 import { Input } from "~/components/ui/input";
 import Link from "next/link";
+import { RefreshCw } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -84,10 +85,11 @@ export default function RegisterPage() {
     <main className="flex min-h-screen flex-col items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-10 flex h-[550px]  max-w-md flex-col items-center gap-4 rounded-xl border bg-[#FAF9F6] p-4 px-8 shadow-lg"
+        className="mx-auto mt-10 flex h-[460px]  max-w-md flex-col items-center gap-4 rounded-xl border bg-[#FAF9F6] p-4 px-8 shadow-lg"
       >
         {/* HEADING */}
         <div className="flex flex-row justify-center">
+          <div className="text-2xl">Register</div>
         </div>
 
         <div className="flex w-[300px] flex-col items-center">
@@ -122,6 +124,7 @@ export default function RegisterPage() {
             className="mt-4 w-full"
             disabled={isLoading}
           >
+            {isLoading && <RefreshCw className="animate-spin mr-2 h-4 w-4" />}
             Create Profile
           </Button>
 

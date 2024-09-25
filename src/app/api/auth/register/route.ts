@@ -13,6 +13,52 @@ interface RegisterDetails {
   hasAcceptedTerms: boolean;
 }
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: User registration
+ *     description: Registers a new user and returns a standard response
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John
+ *               surname:
+ *                 type: string
+ *                 example: Doe
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: Password123!
+ *               hasAcceptedTerms:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       '200':
+ *         description: Successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Registration successful
+ */
+
 export async function POST(request: Request) {
   try {
     const { name, surname, email, password } = (await request.json()) as RegisterDetails;

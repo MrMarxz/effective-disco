@@ -36,6 +36,8 @@ model User {
     actions     Actions[]
 
     @@index([roleId])
+    PasswordResetRequest PasswordResetRequest[]
+    Session Session[]
 }
 
 model Role {
@@ -53,45 +55,69 @@ enum FileUploadStatus {
 
 model FileUploads {
     id       String           @id @default(cuid())
-    status   FileUploadStatus
+    status   FileUploadStatus @default(PENDING)
     url      String
     size     Int
     type     String
     name     String
-    comments String
+    comments String?
     reported Boolean          @default(false)
     display  Boolean          @default(true)
     userId   String
     user     User             @relation(fields: [userId], references: [id])
-    metaData MetaData[]
+    metaData MetaData?
 
     @@index([userId])
 }
 
 model MetaData {
-    id      String      @id @default(cuid())
+    id      String       @id @default(cuid())
     subject String
     grade   Int
     tags    String[]
-    rating  Int
-    fileId  String
-    file    FileUploads @relation(fields: [fileId], references: [id])
+    rating  Int          @default(0)
+    likes   Int          @default(0)
+    fileId  String       @unique
+    file    FileUploads? @relation(fields: [fileId], references: [id])
 
     @@index([fileId])
 }
 
 model Actions {
-    id          String @id @default(cuid())
+    id          String   @id @default(cuid())
     description String
     createdAt   DateTime @default(now())
     userId      String
-    user        User @relation(fields: [userId], references: [id])
+    user        User     @relation(fields: [userId], references: [id])
 
     @@index([userId])
 }
 
 model FAQ {
-    id         String @id @default(cuid())
-    question    String
-    answer      String
+    id       String @id @default(cuid())
+    question String
+    answer   String
+}
+
+model PasswordResetRequest {
+    id        String   @id @default(cuid())
+
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    used      Boolean  @default(false)
+    createdAt DateTime @default(now())
+    expiresAt DateTime
+
+    @@index([userId])
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    token     String
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+
+    @@index([userId])
 }

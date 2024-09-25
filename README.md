@@ -9,3 +9,7 @@ Members of the team:
 Project name:
 
 Share2Teach is an open education resource web application.
+
+## Handy Commands to use
+
+- Commands will follow here
