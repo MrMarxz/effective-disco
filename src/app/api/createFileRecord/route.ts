@@ -2,13 +2,16 @@
 import { checkPermissions } from "~/lib/permissions";
 import prisma from "~/lib/prisma";
 import { StandardResponse } from "~/lib/utils";
-import { getServerAuthSession } from "~/server/auth";
+import { UTApi } from "uploadthing/server";
+import fs from "fs/promises";
+import path from "path";
+import { AddWatermarkToImage, AddWaterToPDF } from "~/lib/file-manager";
 
 interface RecordRequest {
-    url: string;
-    size: number;
-    type: string;
-    name: string;
+    // url: string;
+    // size: number;
+    // type: string;
+    // name: string;
     subject: string;
     grade: number;
     tags: string[];
@@ -25,26 +28,14 @@ interface RecordRequest {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               url:
+ *               files:
  *                 type: string
- *                 description: The URL of the file
- *                 example: https://example.com/file.pdf
- *               size:
- *                 type: number
- *                 description: The size of the file in bytes
- *                 example: 204800
- *               type:
- *                 type: string
- *                 description: The file type (e.g., pdf, doc, etc.)
- *                 example: pdf
- *               name:
- *                 type: string
- *                 description: The name of the file
- *                 example: Example File
+ *                 format: binary
+ *                 description: The file to be uploaded
  *               subject:
  *                 type: string
  *                 description: The subject related to the file
@@ -90,7 +81,7 @@ export async function POST(request: Request) {
             return StandardResponse(false, permission.message);
         }
         //#endregion
-        
+
         // TODO will be commented back in when working on the front end
         // const session = await getServerAuthSession();
         // if (!session) {
@@ -103,35 +94,68 @@ export async function POST(request: Request) {
         // Get the data from the request
         const data: RecordRequest = await request.json();
 
-        // Check if the data is valid
-        if (!data.url || !data.size || !data.type || !data.name) {
-            return StandardResponse(false, "Invalid data");
+        const body = await request.formData();
+        const files = body.getAll("files") as unknown as File[];
+
+        // Sort out images from pdfs
+        const images = files.filter(file => file.type.startsWith("image"));
+        const pdfs = files.filter(file => file.type === "application/pdf");
+
+        // Add the watermark to all the files
+        const watermarkedImages = await AddWatermarkToImage(images);
+        const watermarkedPdfs = await AddWaterToPDF(pdfs);
+
+        if (watermarkedImages.length === 0 && watermarkedPdfs.length === 0) {
+            return StandardResponse(false, "No files were uploaded. Please provide images or PDFs");
         }
+
+        const watermarkedFiles = [...watermarkedImages, ...watermarkedPdfs];
+
+        // Upload files to uploadthing
+        const utapi = new UTApi();
+        const uploadResponse = await utapi.uploadFiles(watermarkedFiles);
+
+        // Only take the first file for now
+        const fileData = uploadResponse[0]?.data
+        const fileUrl = fileData?.url;
+        const fileSize = fileData?.size;
+        const fileType = fileData?.type;
+        const fileName = fileData?.name;
+
+        if (!fileUrl || !fileSize || !fileType || !fileName) {
+            return StandardResponse(false, "An error occurred while uploading the file. Please try again");
+        }
+
+
+        // // Check if the data is valid
+        // if (!data.url || !data.size || !data.type || !data.name) {
+        //     return StandardResponse(false, "Invalid data");
+        // }
 
         // Create a new record in the database
         const record = await prisma.fileUploads.create({
             data: {
-                url: data.url,
-                size: data.size,
-                type: data.type,
-                name: data.name,
+                url: fileUrl,
+                size: fileSize,
+                type: fileType,
+                name: fileName,
                 userId: userId,
             },
         });
 
-        const metadata = await prisma.metaData.create({
-            data: {
-                subject: data.subject,
-                grade: data.grade,
-                tags: data.tags,
-                fileId: record.id,
-            },
-        });
+        // const metadata = await prisma.metaData.create({
+        //     data: {
+        //         subject: data.subject,
+        //         grade: data.grade,
+        //         tags: data.tags,
+        //         fileId: record.id,
+        //     },
+        // });
 
 
 
         // If the user does have the correct role, execute the action
-        return StandardResponse(true, "Record created successfully", record);
+        return StandardResponse(true, "Record created successfully", uploadResponse);
     } catch (e) {
         console.log("Error: ", e);
         return StandardResponse(false, "An error occurred");
