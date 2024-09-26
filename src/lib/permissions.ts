@@ -15,6 +15,7 @@ const allowedUserCalls: string[] = [
     "/editFileRecord",
     "/likeFile",
     "/searchFile",
+    "/getUserFiles",
 ];
 
 const allowedAdminCalls: string[] = [
@@ -23,6 +24,7 @@ const allowedAdminCalls: string[] = [
     "/likeFile",
     "/rateFile",
     "/searchFile",
+    "/getUserFiles",
 ];
 
 const allowedModeratorCalls: string[] = [
@@ -31,6 +33,7 @@ const allowedModeratorCalls: string[] = [
     "/likeFile",
     "/rateFile",
     "/searchFile",
+    "/getUserFiles",
 ];
 
 const allowedEducatorCalls: string[] = [
@@ -39,6 +42,7 @@ const allowedEducatorCalls: string[] = [
     "/likeFile",
     "/rateFile",
     "/searchFile",
+    "/getUserFiles",
 ];
 //#endregion
 
