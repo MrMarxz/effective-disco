@@ -92,10 +92,22 @@ export async function POST(request: Request) {
 
         //* The purpose of this call is to create a new record in the database for a file that has been uploaded *\\
         // Get the data from the request
-        const data: RecordRequest = await request.json();
+        // const data: RecordRequest = await request.json();
 
         const body = await request.formData();
         const files = body.getAll("files") as unknown as File[];
+        const subject = body.get("subject") as string;
+        const grade = body.get("grade") as string;
+        const gradeNumber = parseInt(grade);
+        
+        const tags = body.getAll("tags") as string[];
+
+        if (!subject || !grade || !gradeNumber || !tags) {
+            return StandardResponse(false, "Invalid data. Please provide all the required fields");
+        }
+        
+
+        console.log("Files: ", files);
 
         // Sort out images from pdfs
         const images = files.filter(file => file.type.startsWith("image"));
@@ -143,15 +155,14 @@ export async function POST(request: Request) {
             },
         });
 
-        // const metadata = await prisma.metaData.create({
-        //     data: {
-        //         subject: data.subject,
-        //         grade: data.grade,
-        //         tags: data.tags,
-        //         fileId: record.id,
-        //     },
-        // });
-
+        const metadata = await prisma.metaData.create({
+            data: {
+                subject: subject,
+                grade: gradeNumber,
+                tags: tags,
+                fileId: record.id,
+            },
+        });
 
 
         // If the user does have the correct role, execute the action
