@@ -29,10 +29,8 @@ export default async function AccountPage({ params }: { params: AccountPageProps
     }
 
     if (user.role.name === RoleEnum.USER) {
-        redirect("/")
+        redirect("/user/files")
     } else if (user.role.name === RoleEnum.EDUCATOR) {
-        redirect("/")
-    } else if (user.role.name === RoleEnum.MODERATOR) {
         redirect("/")
     } else if (user.role.name === RoleEnum.ADMIN) {
         redirect("/")

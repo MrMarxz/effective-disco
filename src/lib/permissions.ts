@@ -20,6 +20,8 @@ const allowedUserCalls: string[] = [
     "/reportFile",
     "/getCommunityFiles",
     "/getFile",
+    "/getProfile",
+    "/editProfile",
 ];
 
 const allowedAdminCalls: string[] = [
@@ -33,19 +35,8 @@ const allowedAdminCalls: string[] = [
     "/reportFile",
     "/getCommunityFiles",
     "/getFile",
-];
-
-const allowedModeratorCalls: string[] = [
-    "/createFileRecord",
-    "/editFileRecord",
-    "/likeFile",
-    "/rateFile",
-    "/searchFile",
-    "/getUserFiles",
-    "/toggleVisibility",
-    "/reportFile",
-    "/getCommunityFiles",
-    "/getFile",
+    "/getProfile",
+    "/editProfile",
 ];
 
 const allowedEducatorCalls: string[] = [
@@ -59,6 +50,8 @@ const allowedEducatorCalls: string[] = [
     "/reportFile",
     "/getCommunityFiles",
     "/getFile",
+    "/getProfile",
+    "/editProfile",
 ];
 //#endregion
 
@@ -162,15 +155,6 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.ADMIN),
-                    userId: "",
-                };
-            }
-            break;
-        case RoleEnum.MODERATOR:
-            if (!allowedModeratorCalls.includes(route)) {
-                return {
-                    valid: false,
-                    message: permissionMessages.noPermission(RoleEnum.MODERATOR),
                     userId: "",
                 };
             }

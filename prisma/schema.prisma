@@ -13,7 +13,6 @@ datasource db {
 
 enum RoleEnum {
     ADMIN
-    MODERATOR
     EDUCATOR
     USER
 }

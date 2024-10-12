@@ -4,30 +4,69 @@ import { StandardResponse } from "~/lib/utils";
 
 /**
  * @swagger
- * /api/getFAQ:
+ * /api/getFile:
  *   get:
- *     summary: Retrieve FAQs
- *     description: Returns a list of frequently asked questions and their answers
+ *     summary: Get a file upload
+ *     description: Retrieve a file upload by its unique identifier
  *     tags:
- *       - FAQ
+ *       - File Uploads
  *     responses:
- *       '200':
- *         description: Successfully retrieved FAQ list
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   question:
- *                     type: string
- *                     description: The FAQ question
- *                     example: What happens if my document is denied?
- *                   answer:
- *                     type: string
- *                     description: The answer to the FAQ
- *                     example: If your document is denied, you will receive feedback from the reviewing educator detailing the reason for rejection. You can revise and resubmit your document for further review.
+*       '200':
+*         description: Successfully retrieved file upload
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   id:
+*                     type: string
+*                     description: The unique identifier for the file upload
+*                     example: cljk2c0z80000qwer1234abcd
+*                   status:
+*                     type: string
+*                     description: The status of the file upload
+*                     enum: [PENDING, COMPLETED, FAILED]
+*                     example: COMPLETED
+*                   url:
+*                     type: string
+*                     description: The URL of the uploaded file
+*                     example: https://example.com/uploads/file.pdf
+*                   size:
+*                     type: integer
+*                     description: The size of the file in bytes
+*                     example: 1048576
+*                   type:
+*                     type: string
+*                     description: The MIME type of the file
+*                     example: application/pdf
+*                   name:
+*                     type: string
+*                     description: The name of the file
+*                     example: document.pdf
+*                   comments:
+*                     type: string
+*                     nullable: true
+*                     description: Optional comments about the file
+*                     example: Important document for review
+*                   reported:
+*                     type: boolean
+*                     description: Whether the file has been reported
+*                     example: false
+*                   display:
+*                     type: boolean
+*                     description: Whether the file should be displayed
+*                     example: true
+*                   userId:
+*                     type: string
+*                     description: The ID of the user who uploaded the file
+*                     example: user123
+*                   metaData:
+*                     type: object
+*                     nullable: true
+*                     description: Additional metadata associated with the file
+*                     example: null
  */
 
 export async function GET(request: Request) {
