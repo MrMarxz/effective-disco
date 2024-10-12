@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Loader2, RefreshCw, Upload, User, Users } from 'lucide-react';
+import { Loader2, User, Users } from 'lucide-react';
 import { type FileUploads } from '@prisma/client';
 import FileCard from '~/components/FileCard';
 import { type CustomResponse } from '~/lib/types';
 import toast from 'react-hot-toast';
 import FileUploadDialog from '~/components/upload-dialog';
+import { useDebounce } from 'use-debounce';
 
 interface UserFilesPageProps {
     userId: string;
@@ -20,6 +21,32 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
     const [files, setFiles] = useState<FileUploads[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
+
+    const searchFiles = useCallback(async (query: string) => {
+        if (!query) {
+            if (isShowingUserFiles) {
+                void fetchUserFiles();
+            }
+            else {
+                void fetchCommunityFiles();
+            }
+        }
+
+        setIsLoading(true);
+        try {
+            const response = await axios.get<CustomResponse>('/api/searchFile', {
+                params: { query }
+            });
+            const data = response.data.data as FileUploads[];
+            if (data) setFiles(data);
+        } catch (error) {
+            console.error('Error searching files:', error);
+            toast.error('Failed to search files. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     const fetchUserFiles = async () => {
         setIsLoading(true);
@@ -49,10 +76,6 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
         }
     }
 
-    useEffect(() => {
-        void fetchUserFiles();
-    }, []);
-
     const handleDownload = (file: FileUploads) => {
         // Open the file in a new tab
         window.open(file.url, '_blank');
@@ -81,9 +104,13 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
         }
     };
 
-    const filteredFiles = files.filter(file =>
-        file.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    useEffect(() => {
+        void fetchUserFiles();
+    }, []);
+
+    useEffect(() => {
+        void searchFiles(debouncedSearchTerm);
+      }, [debouncedSearchTerm, searchFiles]);
 
     return (
         <div className="container mx-auto p-4 space-y-6">
@@ -115,9 +142,9 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
                 <div className="flex justify-center items-center h-64">
                     <Loader2 className="h-8 w-8 animate-spin" />
                 </div>
-            ) : filteredFiles.length > 0 ? (
+            ) : files.length > 0 ? (
                 <FileCard
-                    files={filteredFiles}
+                    files={files}
                     onDownload={handleDownload}
                     onToggleDisplay={handleToggleDisplay}
                     onReport={handleReport}

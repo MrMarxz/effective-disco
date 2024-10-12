@@ -19,6 +19,7 @@ const allowedUserCalls: string[] = [
     "/toggleVisibility",
     "/reportFile",
     "/getCommunityFiles",
+    "/getFile",
 ];
 
 const allowedAdminCalls: string[] = [
@@ -31,6 +32,7 @@ const allowedAdminCalls: string[] = [
     "/toggleVisibility",
     "/reportFile",
     "/getCommunityFiles",
+    "/getFile",
 ];
 
 const allowedModeratorCalls: string[] = [
@@ -43,6 +45,7 @@ const allowedModeratorCalls: string[] = [
     "/toggleVisibility",
     "/reportFile",
     "/getCommunityFiles",
+    "/getFile",
 ];
 
 const allowedEducatorCalls: string[] = [
@@ -55,6 +58,7 @@ const allowedEducatorCalls: string[] = [
     "/toggleVisibility",
     "/reportFile",
     "/getCommunityFiles",
+    "/getFile",
 ];
 //#endregion
 

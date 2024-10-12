@@ -4,8 +4,9 @@ import React from 'react';
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Download, AlertTriangle, Eye, EyeOff, File, Image, FilmIcon, Music, Archive } from 'lucide-react';
+import { Download, AlertTriangle, Eye, EyeOff, File, Image, FilmIcon, Music, Archive, ListCollapse } from 'lucide-react';
 import { FileUploadStatus, type FileUploads } from '@prisma/client';
+import FileDetailsDialog from './details-dialog';
 
 
 interface FileCardProps {
@@ -64,8 +65,11 @@ const FileCard: React.FC<FileCardProps> = ({
             <CardContent className="flex-grow p-4">
               <div className="flex items-center space-x-4">
                 {getFileIcon(file.type)}
-                <div>
-                  <h3 className="font-semibold text-lg truncate" title={file.name}>{file.name}</h3>
+                <div className="w-full">
+                  <div className="flex flex-row justify-between">
+                    <h3 className="font-semibold text-lg truncate" title={file.name}>{file.name}</h3>
+                    <FileDetailsDialog fileId={file.id} />
+                  </div>
                   <p className="text-sm text-gray-500">{formatFileSize(file.size)} • {file.type}</p>
                 </div>
               </div>
