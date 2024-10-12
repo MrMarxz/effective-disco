@@ -5,26 +5,52 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
 import { Button } from "~/components/ui/button";
-import { Ban, GraduationCap, ShieldCheck, User } from "lucide-react";
+import { Ban, GraduationCap, RefreshCw, ShieldCheck, User } from "lucide-react";
+import { RoleEnum } from "@prisma/client";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { CustomResponse } from "~/lib/types";
 
 interface ChangeToUserProps {
     userId: string;
 }
 
 export default function ChangeToAdmin({ userId }: ChangeToUserProps) {
-    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
     const submit = async () => {
-        console.log("submit");
+        setIsLoading(true);
+
+        try {
+            const res = await axios.post<CustomResponse>("/api/changeUserRole", {
+                userId,
+                role: RoleEnum.ADMIN,
+            });
+
+            if (res.data.success === true) {
+                window.location.reload();
+            } else {
+                toast.error(res.data.message);
+            }
+        } catch (error) {
+            toast.error("An error occurred while updating User role");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="w-8 h-8">
-                        <ShieldCheck className="h-4 w-4" />
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-8 h-8"
+                        disabled={isLoading}
+                        onClick={submit}
+                    >
+                        {isLoading ? (<RefreshCw className="h-4 w-4 animate-spin" />) : (<ShieldCheck className="h-4 w-4" />)}
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent className="border p-1 bg-white rounded-xl mb-2">

@@ -28,8 +28,11 @@ export default async function Files() {
   });
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <UsersTable columns={columns} data={users} />
+    // <div className="container mx-auto p-4 space-y-6 ">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c] p-4">
+      <div className="w-4/6">
+        <UsersTable columns={columns} data={users} />
+      </div>
     </div>
   );
 }

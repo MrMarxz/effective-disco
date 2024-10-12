@@ -38,6 +38,7 @@ const allowedAdminCalls: string[] = [
     "/getProfile",
     "/editProfile",
     "/getFilteredFiles",
+    "/changeUserRole",
 ];
 
 const allowedEducatorCalls: string[] = [

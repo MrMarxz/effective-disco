@@ -32,7 +32,7 @@ const EducatorLayout: React.FC<EducatorLayoutProps> = async ({ children }) => {
 
     return (
         <>
-            <FAB />
+            <FAB role={RoleEnum.EDUCATOR} />
             {children}
         </>
     )

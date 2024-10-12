@@ -43,7 +43,7 @@ export default function LoginForm() {
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center">
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
             <form
                 onSubmit={handleSubmit}
                 className={`mx-auto mt-10 flex h-[420px] max-w-md flex-col items-center gap-4 rounded-xl border bg-[#FAF9F6] p-4 px-8 shadow-lg`}

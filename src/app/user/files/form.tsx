@@ -114,7 +114,7 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
 
     return (
         <div className="container mx-auto p-4 space-y-6">
-            <h1 className="text-3xl font-bold mb-6">JaKaMa</h1>
+            <h1 className="text-3xl text-white font-bold mb-6">JaKaMa</h1>
 
             <div className="flex items-center space-x-4">
                 <Input
@@ -140,7 +140,7 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
 
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">
-                    <Loader2 className="h-8 w-8 animate-spin" />
+                    <Loader2 className="h-8 w-8 animate-spin text-white" />
                 </div>
             ) : files.length > 0 ? (
                 <FileCard
@@ -151,7 +151,7 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
                 />
             ) : (
                 <div className="text-center py-12">
-                    <p className="text-xl text-gray-500">No files found. Try uploading some!</p>
+                    <p className="text-xl text-white">No files found. Try uploading some!</p>
                 </div>
             )}
         </div>

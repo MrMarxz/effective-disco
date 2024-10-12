@@ -32,7 +32,7 @@ const UserLayout: React.FC<UserLayoutProps> = async ({ children }) => {
 
     return (
         <>
-            <FAB />
+            <FAB role={RoleEnum.ADMIN} />
             {children}
         </>
     )
