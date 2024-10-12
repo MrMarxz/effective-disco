@@ -97,3 +97,14 @@ export const validatePassword = (password: string) => {
 
   return res;
 };
+
+export function enumToString(enumString: string): string {
+  if (typeof enumString !== "string") {
+      return "";
+  }
+  const words = enumString.toLowerCase().split("_");
+  return words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+}
+
