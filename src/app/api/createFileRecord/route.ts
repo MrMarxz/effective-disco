@@ -98,10 +98,15 @@ export async function POST(request: Request) {
         const body = await request.formData();
         const files = body.getAll("files") as unknown as File[];
         const subject = body.get("subject") as string;
+
         const grade = body.get("grade") as string;
         const gradeNumber = parseInt(grade);
         
         const tags = body.getAll("tags") as string[];
+
+        console.log("Subject: ", subject);
+        console.log("Grade: ", grade);
+        console.log("Tags: ", tags);
 
         if (!subject || !grade || !gradeNumber || !tags) {
             return StandardResponse(false, "Invalid data. Please provide all the required fields");
