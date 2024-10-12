@@ -114,7 +114,7 @@ const UserFilesPage: React.FC<UserFilesPageProps> = ({ userId }) => {
 
     return (
         <div className="container mx-auto p-4 space-y-6">
-            <h1 className="text-3xl font-bold mb-6">All Files</h1>
+            <h1 className="text-3xl font-bold mb-6">JaKaMa</h1>
 
             <div className="flex items-center space-x-4">
                 <Input

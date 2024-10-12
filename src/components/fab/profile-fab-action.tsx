@@ -101,7 +101,7 @@ const ProfileUpdateDialog: React.FC = () => {
                 <Button
                     variant="outline"
                     size="icon"
-                    className="w-10 h-10 rounded-full shadow-lg transition-all duration-300 ease-in-out bg-primary text-white hover:text-white bg-[#007F7F] hover:bg-[#007F7F] hover:scale-110"
+                    className="w-10 h-10 rounded-full shadow-lg transition-all duration-300 ease-in-out bg-primary text-white hover:text-white bg-blue-500 hover:bg-blue-500 hover:scale-110"
                 >
                     <UserIcon className="h-5 w-5" />
                 </Button>

@@ -1,14 +1,16 @@
+
 import { RoleEnum } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { env } from "~/env";
+import { type ReactNode } from "react";
+import FAB from "~/components/fab/fab";
 import prisma from "~/lib/prisma";
 import { getServerAuthSession } from "~/server/auth";
 
-interface AccountPageProps {
-    name: string;
+interface EducatorLayoutProps {
+    children: ReactNode;
 }
 
-export default async function AccountPage({ params }: { params: AccountPageProps }) {
+const EducatorLayout: React.FC<EducatorLayoutProps> = async ({ children }) => {
     const session = await getServerAuthSession();
 
     if (!session) {
@@ -24,18 +26,16 @@ export default async function AccountPage({ params }: { params: AccountPageProps
         }
     });
 
-    if (!user) {
+    if (user?.role.name !== RoleEnum.EDUCATOR) {
         redirect("/login")
     }
 
-    if (user.role.name === RoleEnum.USER) {
-        redirect("/user/files")
-    } else if (user.role.name === RoleEnum.EDUCATOR) {
-        redirect("/educator/files")
-    } else if (user.role.name === RoleEnum.ADMIN) {
-        redirect("/")
-    } else {
-        redirect("/login")
-    }
+    return (
+        <>
+            <FAB />
+            {children}
+        </>
+    )
+};
 
-}
+export default EducatorLayout;

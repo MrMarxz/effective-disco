@@ -37,6 +37,7 @@ const allowedAdminCalls: string[] = [
     "/getFile",
     "/getProfile",
     "/editProfile",
+    "/getFilteredFiles",
 ];
 
 const allowedEducatorCalls: string[] = [
@@ -52,6 +53,7 @@ const allowedEducatorCalls: string[] = [
     "/getFile",
     "/getProfile",
     "/editProfile",
+    "/getFilteredFiles",
 ];
 //#endregion
 

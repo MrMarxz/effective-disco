@@ -26,7 +26,7 @@ const FAB = () => {
                 <Button
                     variant="default"
                     size="icon"
-                    className="w-14 h-14 rounded-full shadow-lg bg-blue-900 hover:bg-blue-800"
+                    className="w-14 h-14 rounded-full shadow-lg"
                     onClick={toggleMenu}
                 >
                     <Plus className={`h-6 w-6 transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />
