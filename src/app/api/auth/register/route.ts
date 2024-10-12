@@ -113,5 +113,4 @@ export async function POST(request: Request) {
     console.log("Error while creating user: ", e);
     return StandardResponse(false, "Error while creating user");
   }
-  return StandardResponse(true, "User created successfully");
 }

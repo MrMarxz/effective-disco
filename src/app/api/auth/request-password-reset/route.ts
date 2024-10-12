@@ -79,7 +79,12 @@ export async function POST(request: Request) {
         // Send forget password email
         const htmlContent = ForgetPasswordTemplate(user.name, redirectLink);
         const emailData = {
-            recipients: [],
+            recipients: [
+                {
+                    email: user.email,
+                    name: user.name
+                }
+            ],
             htmlContent,
             subject: "Reset your password"
         };

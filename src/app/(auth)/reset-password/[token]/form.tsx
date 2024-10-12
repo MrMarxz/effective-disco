@@ -70,7 +70,7 @@ export default function Form({ token }: ResetPasswordParams) {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       <div className="mx-auto mt-10 flex h-[350px] w-[450px] max-w-md flex-col gap-4 rounded-lg border bg-white p-8 shadow-lg">
         {/* HEADING */}
         <div className="flex flex-row justify-center">

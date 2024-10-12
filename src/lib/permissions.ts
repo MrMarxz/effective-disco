@@ -16,6 +16,12 @@ const allowedUserCalls: string[] = [
     "/likeFile",
     "/searchFile",
     "/getUserFiles",
+    "/toggleVisibility",
+    "/reportFile",
+    "/getCommunityFiles",
+    "/getFile",
+    "/getProfile",
+    "/editProfile",
 ];
 
 const allowedAdminCalls: string[] = [
@@ -25,15 +31,14 @@ const allowedAdminCalls: string[] = [
     "/rateFile",
     "/searchFile",
     "/getUserFiles",
-];
-
-const allowedModeratorCalls: string[] = [
-    "/createFileRecord",
-    "/editFileRecord",
-    "/likeFile",
-    "/rateFile",
-    "/searchFile",
-    "/getUserFiles",
+    "/toggleVisibility",
+    "/reportFile",
+    "/getCommunityFiles",
+    "/getFile",
+    "/getProfile",
+    "/editProfile",
+    "/getFilteredFiles",
+    "/changeUserRole",
 ];
 
 const allowedEducatorCalls: string[] = [
@@ -43,6 +48,13 @@ const allowedEducatorCalls: string[] = [
     "/rateFile",
     "/searchFile",
     "/getUserFiles",
+    "/toggleVisibility",
+    "/reportFile",
+    "/getCommunityFiles",
+    "/getFile",
+    "/getProfile",
+    "/editProfile",
+    "/getFilteredFiles",
 ];
 //#endregion
 
@@ -91,58 +103,8 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
 
 
     //#region Session Management
-    // ! This will be commented back in when we work on the frontend
-    // const session = await getServerAuthSession();
-    // const userId = session?.user.id;
-
-    // ! This is a temporary solution for the backend
-    // Get the session from the header
-    const session = request.headers.get("Authorization");
-
-    // Remove the Bearer prefix
-    const token = session?.replace("Bearer ", "");
-
-    if (!token) {
-        return {
-            valid: false,
-            message: permissionMessages.userNotFound,
-            userId: "",
-        };
-    }
-
-    // Verify the token
-    jwt.verify(token, "secret", (err, decoded) => {
-        if (err) {
-            return {
-                valid: false,
-                message: permissionMessages.tokenMissing,
-                userId: "",
-            };
-        }
-        console.log("DECODED", decoded);
-    });
-
-    // Find the user with the associated token
-    const sessionUser = await prisma.session.findFirst({
-        where: {
-            token: token,
-        },
-        include: {
-            user: true
-        }
-    });
-
-    if (!sessionUser) {
-        return {
-            valid: false,
-            message: permissionMessages.userNotFound,
-            userId: "",
-        };
-    }
-
-    const userId = sessionUser.userId;
-    // ! End of temporary solution ! \\
-
+    const session = await getServerAuthSession();
+    const userId = session?.user.id;
     //#endregion
 
 
@@ -196,15 +158,6 @@ export const checkPermissions = async (request: Request): Promise<PermissionResp
                 return {
                     valid: false,
                     message: permissionMessages.noPermission(RoleEnum.ADMIN),
-                    userId: "",
-                };
-            }
-            break;
-        case RoleEnum.MODERATOR:
-            if (!allowedModeratorCalls.includes(route)) {
-                return {
-                    valid: false,
-                    message: permissionMessages.noPermission(RoleEnum.MODERATOR),
                     userId: "",
                 };
             }

@@ -6,6 +6,7 @@ import { UTApi } from "uploadthing/server";
 import fs from "fs/promises";
 import path from "path";
 import { AddWatermarkToImage, AddWaterToPDF } from "~/lib/file-manager";
+import { getServerAuthSession } from "~/server/auth";
 
 interface RecordRequest {
     // url: string;
@@ -83,12 +84,12 @@ export async function POST(request: Request) {
         //#endregion
 
         // TODO will be commented back in when working on the front end
-        // const session = await getServerAuthSession();
-        // if (!session) {
-        //     return StandardResponse(false, "Not authenticated");
-        // }
-        // const userId = session.user.id;
-        const userId = permission.userId;
+        const session = await getServerAuthSession();
+        if (!session) {
+            return StandardResponse(false, "Not authenticated");
+        }
+        const userId = session.user.id;
+        // const userId = permission.userId;
 
         //* The purpose of this call is to create a new record in the database for a file that has been uploaded *\\
         // Get the data from the request
@@ -97,10 +98,15 @@ export async function POST(request: Request) {
         const body = await request.formData();
         const files = body.getAll("files") as unknown as File[];
         const subject = body.get("subject") as string;
+
         const grade = body.get("grade") as string;
         const gradeNumber = parseInt(grade);
         
         const tags = body.getAll("tags") as string[];
+
+        console.log("Subject: ", subject);
+        console.log("Grade: ", grade);
+        console.log("Tags: ", tags);
 
         if (!subject || !grade || !gradeNumber || !tags) {
             return StandardResponse(false, "Invalid data. Please provide all the required fields");
