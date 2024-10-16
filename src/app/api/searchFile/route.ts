@@ -10,7 +10,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Search for files
  *     description: Returns a list of file records based on search criteria
  *     tags:
- *       - File Search
+ *       - Files
  *     responses:
  *       '200':
  *         description: Successfully retrieved file records

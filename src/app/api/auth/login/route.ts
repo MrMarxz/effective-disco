@@ -11,49 +11,6 @@ interface LoginDetails {
     password: string;
 }
 
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: User login
- *     description: Logs in a user and returns a standard response with a JWT token
- *     tags:
- *       - Authentication
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 example: user123
- *               password:
- *                 type: string
- *                 example: password123
- *     responses:
- *       '200':
- *         description: Successfully logged in
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Login successful
- *                 data:
- *                   type: object
- *                   properties:
- *                     token:
- *                       type: string
- *                       description: JWT token for the user
- *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.abc123
- */
 export async function POST(request: Request) {
     try {
         const { email, password } = (await request.json()) as LoginDetails;

@@ -25,7 +25,7 @@ interface RecordRequest {
  *     summary: Create a file record
  *     description: Creates a new file record and returns a standard response
  *     tags:
- *       - File Records
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:

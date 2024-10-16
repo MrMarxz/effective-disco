@@ -9,7 +9,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Retrieve user files
  *     description: Fetches an array of file information for a specific user
  *     tags:
- *      - User Files
+ *      - Files
  *     parameters:
  *       - in: query
  *         name: userId

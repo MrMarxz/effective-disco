@@ -10,7 +10,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Get filtered file uploads
  *     description: Retrieve file uploads based on a filter
  *     tags:
- *       - File Uploads
+ *       - Files
  *     responses:
 *       '200':
 *         description: Successfully retrieved file uploads
