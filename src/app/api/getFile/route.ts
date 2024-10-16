@@ -9,7 +9,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Get a file upload
  *     description: Retrieve a file upload by its unique identifier
  *     tags:
- *       - File Uploads
+ *       - Files
  *     responses:
 *       '200':
 *         description: Successfully retrieved file upload

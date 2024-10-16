@@ -17,7 +17,7 @@ interface RateRequest {
  *     summary: Rate a file
  *     description: Adds a rating to a file and returns a standard response
  *     tags:
- *       - File Interactions
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:

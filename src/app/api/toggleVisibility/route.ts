@@ -15,7 +15,7 @@ interface ReqProps {
  *     summary: Toggle the visibility of a file
  *     description: Toggle the visibility of a file and returns a standard response
  *     tags:
- *       - File Records
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:

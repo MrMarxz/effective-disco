@@ -9,7 +9,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Get the user's profile
  *     description: Retrieve the user's profile information
  *     tags:
- *       - Profile
+ *       - Users
 *     responses:
 *       '200':
 *         description: Successfully retrieved user information

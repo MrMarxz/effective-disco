@@ -14,7 +14,7 @@ interface LikeRequest {
  *     summary: Like a file
  *     description: Adds a like to a file and returns a standard response
  *     tags:
- *       - File Interactions
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:

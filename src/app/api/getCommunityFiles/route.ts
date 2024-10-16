@@ -10,7 +10,7 @@ import { StandardResponse } from "~/lib/utils";
  *     summary: Retrieve community files
  *     description: Returns a list of files uploaded by the community
  *     tags:
- *       - Community Files
+ *       - Files
  *     responses:
  *       '200':
  *         description: Successfully retrieved file uploads list

@@ -23,7 +23,7 @@ interface UpdateRequest {
  *     summary: Edit a file record
  *     description: Updates an existing file record and returns a standard response
  *     tags:
- *       - File Records
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:

@@ -21,7 +21,7 @@ interface EditProfileProps {
  *     summary: Edit user profile
  *     description: Updates the profile information of the authenticated user.
  *     tags:
- *       - User
+ *       - Users
  *     security:
  *       - BearerAuth: []
  *     requestBody:

@@ -15,7 +15,7 @@ interface ReqProps {
  *     summary: Report a file
  *     description: Report a file and returns a standard response
  *     tags:
- *       - File Records
+ *       - Files
  *     requestBody:
  *       required: true
  *       content:
