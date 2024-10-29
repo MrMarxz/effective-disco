@@ -94,6 +94,7 @@ const FileDetailsDialog: React.FC<FileDetailsDialogProps> = ({ fileId }) => {
         try {
             const response = await axios.put<CustomResponse>('/api/editFileRecord', data);
             if (response.data.success === true) {
+                // console.log(response.data)
                 window.location.reload();
             } else {
                 toast.error(response.data.message);

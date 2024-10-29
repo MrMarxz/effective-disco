@@ -14,6 +14,13 @@ interface UpdateRequest {
     comments?: string;
     reported?: boolean;
     display?: boolean;
+
+    // Metadata
+    metaData?: {
+        subject: string;
+        tags: string[];
+        grade: number;
+    }
 }
 
 /**
@@ -134,6 +141,21 @@ export async function PUT(request: Request) {
                 ...(data.display && { display: data.display }),
             }
         });
+
+        // If the metadata was provided, update the metadata
+        console.log("Metadata: ", data.metaData);
+        if (data.metaData) {
+            await prisma.metaData.update({
+                where: {
+                    fileId: data.id
+                },
+                data: {
+                    ...(data.metaData.subject && { subject: data.metaData.subject }),
+                    ...(data.metaData.tags && { tags: data.metaData.tags }),
+                    ...(data.metaData.grade && { grade: Number(data.metaData.grade) }),
+                }
+            });
+        }
 
         // If the user does have the correct role, execute the action
         return StandardResponse(true, "Record updated successfully!", updatedRecord);
