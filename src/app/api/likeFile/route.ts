@@ -69,6 +69,19 @@ export async function PUT(request: Request) {
             return StandardResponse(false, "File not found. Please provide a valid file ID");
         }
 
+        console.log("File: ", file);
+
+        // Find the metadata
+        const metadata = await prisma.metaData.findUnique({
+            where: {
+                fileId: data.fileId
+            }
+        });
+
+        if (!metadata) {
+            return StandardResponse(false, "Metadata not found. This might be an outdated file. Try a different file");
+        }
+
         // Update the rating of the file in the database
         const updatedMetadata = await prisma.metaData.update({
             where: {

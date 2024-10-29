@@ -5,7 +5,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
-import { Check, Eye, ListCollapse, Loader2 } from "lucide-react";
+import { Check, Eye, ListCollapse, Loader2, ThumbsUp } from "lucide-react";
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { type CustomResponse } from '~/lib/types';
@@ -40,6 +40,8 @@ const FileDetailsDialog: React.FC<FileDetailsDialogProps> = ({ fileId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [fileData, setFileData] = useState<FileData | null>(null);
+    const [hasLiked, setHasLiked] = useState(false);
+    const [isLikeLoading, setIsLikeLoading] = useState(false);
     const { register, handleSubmit, reset } = useForm<FileData>();
 
     useEffect(() => {
@@ -64,6 +66,28 @@ const FileDetailsDialog: React.FC<FileDetailsDialogProps> = ({ fileId }) => {
             void fetchFileData();
         }
     }, [fileId, isOpen, reset]);
+
+    const handleLike = async () => {
+        console.log("like")
+
+        setIsLikeLoading(true);
+
+        try {
+            const response = await axios.put<CustomResponse>('/api/likeFile', { fileId });
+            
+            if (response.data.success === true) {
+                setHasLiked(true);
+                toast.success('File liked successfully');
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error('Error liking file:', error);
+            toast.error('Failed to like file');
+        } finally {
+            setIsLikeLoading(false);
+        }
+    }
 
     const onSubmit = async (data: FileData) => {
         setIsSaving(true);
@@ -104,12 +128,22 @@ const FileDetailsDialog: React.FC<FileDetailsDialogProps> = ({ fileId }) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle className="flex justify-between items-center w-full text-2xl font-bold text-gray-900">
                         {isEditing ? 'Edit File Details' : 'File Details'}
-                        {fileData?.url && (
-                            <Button onClick={() => { window.open(fileData?.url, "_blank") }} className="bg-green-500 hover:bg-green-600 text-white rounded-full h-[30px]">
-                                <Eye className="h-4 w-4 mr-2" />
-                                View File
+                        <div className="flex flex-row items-center gap-x-2">
+                            {fileData?.url && (
+                                <Button onClick={() => { window.open(fileData?.url, "_blank") }} className="bg-green-500 hover:bg-green-600 text-white rounded-full h-[30px]">
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    View File
+                                </Button>
+                            )}
+                            <Button
+                                className="rounded-full border border-green-300 hover:text-accent-foreground bg-green-200 hover:bg-green-300 w-[60px] text-xs text-black sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                                size="sm"
+                                disabled={hasLiked}
+                                onClick={handleLike}
+                            >
+                                <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                             </Button>
-                        )}
+                        </div>
                     </AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogDescription>

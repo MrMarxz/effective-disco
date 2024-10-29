@@ -14,7 +14,7 @@ export default function HomePage() {
             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             href="/swagger"
           >
-            <h3 className="text-2xl font-bold">API Docs →</h3>
+            <h3 className="text-2xl font-bold">📚 API Docs →</h3>
             <div className="text-lg">
               Need the secret map to our API treasure? Click here to sail away to the Swagger page, where all the documentation magic happens!
             </div>
@@ -24,16 +24,22 @@ export default function HomePage() {
             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             href="/login"
           >
-            <h3 className="text-2xl font-bold">Login →</h3>
+            <h3 className="text-2xl font-bold">🔒 Login →</h3>
             <div className="text-lg">
               Ready to set sail? Click here to log in and start your adventure!
             </div>
           </Link>
 
-        </div>
-        <div className="flex flex-col items-center justify-between">
-          <div>Test our uploads:</div>
-          <UploadTestButton />
+          <Link
+            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+            href="/faq"
+          >
+            <h3 className="text-2xl font-bold">❓ FAQ →</h3>
+            <div className="text-lg">
+              Have any questions? Click here to see our FAQ page!
+            </div>
+          </Link>
+
         </div>
       </div>
     </main>
